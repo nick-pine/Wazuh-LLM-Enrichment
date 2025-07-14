@@ -1,20 +1,29 @@
-# llm_enrichment.py
-
 import json
 import time
 import requests
 from datetime import datetime, timezone
 from providers.ollama import query_ollama
+from providers.gemini import query_gemini 
 # from providers.claude import query_claude  # (for future use)
 # from providers.openai import query_openai  # (for future use)
+
+# warning-suppression for testing
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # === CONFIG ===
 ALERT_LOG_PATH = "/var/ossec/logs/alerts/alerts.json"
 ENRICHED_OUTPUT_PATH = "llm_enriched_alerts.json"
 
 # Choose LLM provider and model
-LLM_PROVIDER = "ollama"
-LLM_MODEL = "phi3:mini"
+
+# Ollama
+# LLM_PROVIDER = "ollama"
+# LLM_MODEL = "phi3:mini"
+
+# Gemini Pro
+LLM_PROVIDER = "gemini"
+LLM_MODEL = "gemini-pro"
 
 # Elasticsearch config
 ELASTICSEARCH_URL = "https://192.168.1.173:9200"
@@ -25,6 +34,8 @@ ENRICHED_INDEX = "wazuh-enriched-alerts"
 def call_llm_enrichment(alert):
     if LLM_PROVIDER == "ollama":
         return query_ollama(alert, model=LLM_MODEL)
+    elif LLM_PROVIDER == "gemini":
+        return query_gemini(alert, model=LLM_MODEL)
     # elif LLM_PROVIDER == "claude":
     #     return query_claude(alert, model="claude-haiku")
     # elif LLM_PROVIDER == "openai":

@@ -34,3 +34,6 @@ build/
 # macOS and Windows system files
 .DS_Store
 Thumbs.db
+
+# Personal API data
+api_config.py
